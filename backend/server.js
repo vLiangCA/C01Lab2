@@ -171,7 +171,6 @@ app.get("/getNote/:noteId", express.json(), async (req, res) => {
     }
   });
 
-// TODO: retrieve all notes
 // Retrieve all notes belonging to the user
 app.get("/getAllNotes", express.json(), async (req, res) => {
   try {
@@ -186,7 +185,7 @@ app.get("/getAllNotes", express.json(), async (req, res) => {
       const collection = db.collection(COLLECTIONS.notes);
       const data = await collection.find({
         username: decoded.username,
-      });
+      }).toArray();
       if (!data) {
         return res.json({ response: [] });
       }
@@ -222,7 +221,7 @@ app.delete("/deleteNote/:noteId", express.json(), async (req, res) => {
       if (data.deletedCount == 0) {
         return res
           .status(404)
-          .json({ error: "Unable to find note with given ID." });
+          .json({ error: "Unable to find note with given ID belonging to the user." });
       }
       res.json({ response: `Document with ID ${noteId} properly deleted.` });
     });
@@ -274,7 +273,7 @@ app.patch("/editNote/:noteId", express.json(), async (req, res) => {
       if (data.modifiedCount == 0) {
         return res
           .status(404)
-          .json({ error: "Unable to find note with given ID." });
+          .json({ error: "Unable to find note with given ID belonging to the user." });
       }
       res.json({ response: `Document with ID ${noteId} properly updated.` });
     });
